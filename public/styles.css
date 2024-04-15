@@ -1,0 +1,166 @@
+
+body {
+	margin: 0;
+}
+
+header {
+	display: flex;
+}
+
+.hidden {
+	display: none;
+}
+area {
+	box-sizing: border-box;
+}
+
+button {
+	background: none;
+	border: none;
+	cursor: pointer;
+}
+
+.transparent-layout {
+	background: rgba(136, 135, 135, 0.3);
+	margin: auto;
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	transition: opacity 0.25s ease;
+	z-index: 9999;
+}
+
+.modal {
+	background-color: white;
+	margin: auto;
+	height: fit-content;
+	width: fit-content;
+	margin-top: 5%;
+	padding: 20px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	padding-bottom: 5px;
+	padding-left: 5px;
+	padding-right: 5px;
+	position: relative;
+
+}
+.modal-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+.modal-button:hover {
+    background-color: #6a1b9a; 
+}
+
+
+#crafts {
+	display: flex;
+	flex-wrap: wrap;
+	padding: 0 4px;
+}
+
+#crafts img {
+	margin-top: 8px;
+	vertical-align: middle;
+	width: 100%;
+	cursor: pointer;
+}
+
+.column {
+	flex: 25%;
+	max-width: 25%;
+	padding: 0 4px;
+}
+
+#flex-div {
+	display: flex;
+}
+
+
+#btn {
+	text-align: right;
+	padding: 0;
+	margin: 0;
+}
+
+#craft-form {
+	display: flex;
+}
+
+#preview {
+	display: block;
+	margin: auto;
+}
+
+form button {
+	background: purple;
+	color: white;
+	border-radius: 5px;
+	padding: 5px;
+	font-size: large;
+}
+
+form input {
+	background: rgb(222, 183, 233);
+}
+
+form textarea {
+	background: rgb(222, 183, 233);
+}
+
+#image {
+	visibility: hidden;
+}
+
+#image-label {
+	display: block;
+	background: purple;
+	color: white;
+	border-radius: 5px;
+	padding: 5px;
+	font-size: large;
+	cursor: pointer;
+	width: fit-content;
+	margin: 10px;
+}
+
+#img-div {
+	width: fit-content;
+}
+
+#description-label {
+	vertical-align: top;
+}
+#delete-button {
+	font-size: larger;
+}
+#preview {
+	max-height: 500px;
+	height: auto;
+	max-width: 500px;
+	width: auto;
+}
+
+#edit-button {
+	font-size: larger;
+}
+
+
+@media (max-width: 800px) {
+	.column {
+		flex: 50%;
+		max-width: 50%;
+	}
+}
+
+@media (max-width: 600px) {
+	.column {
+		flex: 100%;
+		max-width: 100%;
+	}
+}

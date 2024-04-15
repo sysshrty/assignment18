@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<!--sb-->
+	<head>
+		<title>Assignment 18 Server CRUD with MongoDB</title>
+		
+		<link rel="stylesheet" href="styles.css" />
+	</head>
+	<body>
+		<div id="layout" class="transparent-layout hidden">
+			<div id="craft-modal" class="modal hidden"></div>
+		</div>
+		<div id="add-craft-layout" class="transparent-layout hidden">
+			<div id="add-craft-modal" class="modal hidden">
+				<p id="btn"><button id="cancel">X</button></p>
+				<form id="craft-form" method="post">
+					<input type="hidden" id="_id" name="_id" value=""/>
+					<div id="img-div">
+						<p><img id="preview" src="https://place-hold.it/200x300" /></p>
+						<p>
+							<label id="image-label" for="image">Select an Image</label>
+							<input type="file" id="image" name="image" accept="image/area"/>
+						</p>
+					</div>
+					<div id="text-content">
+						<h1>Make Changes to your craft</h1>
+						<p>
+                            <label for="name">Name:</label>
+							<input type="text" id="name" name="name" required />
+						</p>
+						<p>
+							<label id="description-label" for="description">Description:</label>
+							<textarea id="description" name="description" rows="2" cols="50" required></textarea>
+						</p>
+						<div>
+							<p>
+								<label for="supply">Supplies:</label>
+								<input type="text" id="supply" name="supply" />
+								<button id="add-supply">Add Supply</button>
+							</p>
+							<section id="supplies-list"></section>
+						</div>
+						<div id="buttons-flex">
+							<button id="cancel" class="form-buttons">Cancel</button>
+							<button type="submit" id="save" class="form-buttons">Save</button>
+						</div>
+						<p id="error"></p>
+					</div>
+				</form>
+			</div>
+		</div>
+		<header>
+			<h1>Buy and Sell Crafts</h1>
+			<button id="addCraft">
+				<h1><strong>+</strong></h1>
+			</button>
+		</header>
+		<main>
+			<div id="crafts"></div>
+		</main>
+        <script src="script.js"></script>
+	</body>
+</html>
