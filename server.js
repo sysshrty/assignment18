@@ -37,17 +37,6 @@ mongoose
 });
 const Craft = mongoose.model("Craft", craftSchema);
 
-const validateCraft = (craft) => {
-	const schema = Joi.object({
-		_id: Joi.allow(""),
-		name: Joi.string().min(3).required(),
-		description: Joi.string().min(3).required(),
-		supplies: Joi.allow(""),
-	});
-	return schema.validate(craft);
-};
-
-
 app.get("/", (req, res) => {
 	res.sendFile(__dirname + "/index.html");
 });
@@ -56,25 +45,38 @@ app.get("/api/crafts", async (req, res) => {
 	res.send(await Craft.find());
 });
 
-app.post("/api/crafts", upload.single("image"), async (req, res) => {
-	const result = validateCraft(req.body);
-	if (result.error) {
-		res.status(400).send(result.error.details[0].message);
-		return;
+app.put("/api/crafts/:id", async (req, res) => {
+	try {
+	  const result = validateCraft(req.body);
+	  if (result.error) {
+		return res.status(400).send(result.error.details[0].message);
+	  }
+  
+	  const id = req.params.id;
+	  let craft = await Craft.findById(id);
+	  if (!craft) {
+		return res.status(404).send("Craft not found");
+	  }
+  
+	  // Update craft fields
+	  craft.name = req.body.name;
+	  craft.description = req.body.description;
+	  craft.supplies = req.body.supplies.split(",");
+	  if (req.file) {
+		craft.image = req.file.filename;
+	  }
+  
+	  // Save updated
+	  await craft.save();
+  
+	  // Send
+	  res.send(craft);
+	} catch (error) {
+	  console.error("Error updating craft:", error);
+	  res.status(500).send("Internal server error");
 	}
-	if (!req.file) {
-		res.status(400).send("No Image File Found");
-		return;
-	}
-	const craft = new Craft ({
-		name: req.body.name,
-		description: req.body.description,
-		supplies: req.body.supplies.split(","),
-		image: req.file.filename
-	});
-	await craft.save();
-	res.send(craft);
-});
+  });
+  
   
 
 app.put("/api/crafts/:id", upload.single("image"), async (req, res) => {

@@ -186,35 +186,41 @@ const closeAddCraft = () => {
 
 
 const submitCraft = async (event) => {
-	event.preventDefault();
-	const form = document.getElementById("craft-form");
-	const formData = new FormData(form);
-	formData.append("supplies", getSupplies());
-	formData.delete("supply");
-	let response = null; // Change from 0 to null for clarity
-	try {
-		if (form._id.value.trim() === "") {
-			response = await fetch("/api/crafts", {
-				method: "POST",
-				body: formData
-			});
-		} else {
-			console.log("put");
-			response = await fetch(`/api/crafts/${form._id.value}`, {
-				method: "PUT",
-				body: formData,
-			});
-		}
-		if (response.status !== 200) {
-			throw new Error("Error data input");
-		}
-		await response.json();
-		closeAddCraft();
-		showCrafts();
-	} catch (error) {
-		document.getElementById("error").innerHTML = error.message;
-	}
+    event.preventDefault();
+    const form = document.getElementById("craft-form");
+    const formData = new FormData(form);
+    formData.append("supplies", getSupplies());
+    formData.delete("supply");
+    let response = null;
+
+    try {
+        if (form._id.value.trim() === "") {
+            response = await fetch("/api/crafts", {
+                method: "POST",
+                body: formData
+            });
+        } else {
+            console.log("put");
+            response = await fetch(`/api/crafts/${form._id.value}`, {
+                method: "PUT",
+                body: formData,
+            });
+        }
+
+        if (!response.ok) {
+            throw new Error("Error: " + response.statusText);
+        }
+
+        const result = await response.json();
+        closeAddCraft();
+        showCrafts();
+    } catch (error) {
+        // Display error message to the user
+        document.getElementById("error").textContent = error.message;
+        console.error("Error:", error);
+    }
 };
+
 
 showCrafts();
 document.getElementById("cancel").onclick = closeAddCraft;
