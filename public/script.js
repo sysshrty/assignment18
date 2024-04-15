@@ -7,9 +7,9 @@ const getCrafts = async () => {
 	}
 };
 const getCraft = (craft) => {
-	const craft_Img = document.createElement("img");
-	craft_Img.src = "./images/" + craft.image;
-	craft_Img.onclick = () => {
+	const craftsImg = document.createElement("img");
+	craftsImg.src = "./images/" + craft.image;
+	craftsImg.onclick = () => {
 		const layout = document.getElementById("layout");
 		const modalDiv = document.getElementById("craft-modal");
 		modalDiv.innerHTML = "";
@@ -77,7 +77,7 @@ const getCraft = (craft) => {
 		layout.classList.remove("hidden");
 		modalDiv.classList.remove("hidden");
 	};
-	return craft_Img;
+	return craftsImg;
 };
 const closeModal = () => {
 	const overlay = document.getElementById("layout");
@@ -187,35 +187,40 @@ const closeAddCraft = () => {
 
 
 const submitCraft = async (event) => {
-	event.preventDefault();
-	const form = document.getElementById("craft-form");
-	const formData = new FormData(form);
-	formData.append("supplies", getSupplies());
-	formData.delete("supply");
-	let response = null;
-	try {
-		if (form._id.value.trim() === "") {
-			response = await fetch("/api/crafts", {
-				method: "POST",
-				body: formData
-			});
-		} else {
-			console.log("put");
-			response = await fetch(`/api/crafts/${form._id.value}`, {
-				method: "PUT",
-				body: formData,
-			});
-		}
-		if (response.status !== 200) {
-			throw new Error("Error data input");
-		}
-		await response.json();
-		closeAddCraft();
-		showCrafts();
-	} catch (error) {
-		document.getElementById("error").innerHTML = error.message;
-	}
+    event.preventDefault();
+    const form = document.getElementById("craft-form");
+    const formData = new FormData(form);
+    formData.append("supplies", getSupplies());
+    formData.delete("supply");
+    let response = null;
+
+    try {
+        if (form._id.value.trim() === "") {
+            response = await fetch("/api/crafts", {
+                method: "POST",
+                body: formData
+            });
+        } else {
+            console.log("put");
+            response = await fetch(`/api/crafts/${form._id.value}`, {
+                method: "PUT",
+                body: formData,
+            });
+        }
+
+        if (!response.ok) {
+            throw new Error("Error: " + response.statusText);
+        }
+
+        const result = await response.json();
+        closeAddCraft();
+        showCrafts();
+    } catch (error) {
+        document.getElementById("error").textContent = error.message;
+        console.error("Error:", error);
+    }
 };
+
 
 showCrafts();
 document.getElementById("cancel").onclick = closeAddCraft;
