@@ -6,79 +6,90 @@ const getCrafts = async () => {
 		return "";
 	}
 };
-const getCraft = (craft) => {
-	const craftsImg = document.createElement("img");
-	craftsImg.src = "./images/" + craft.image;
-	craftsImg.onclick = () => {
-		const layout = document.getElementById("layout");
-		const modalDiv = document.getElementById("craft-modal");
-		modalDiv.innerHTML = "";
-		const buttonWrap = document.createElement("p");
-		buttonWrap.id = "btn";
-		const close = document.createElement("button");
-		close.onclick = closeModal;
-		close.innerHTML = "X";
-		buttonWrap.append(close);
-		modalDiv.append(buttonWrap);
-		const flexDiv = document.createElement("div");
-		flexDiv.id = "flex-div";
-		const imgDiv = document.createElement("div");
-		const flexImg = document.createElement("img");
-		flexImg.src = "./images/" + craft.image;
-		imgDiv.append(flexImg);
-		const textDiv = document.createElement("div");
-		const craftH2 = document.createElement("h2");
-		craftH2.innerHTML = craft.name;
-		const editButton = document.createElement("button");
-		editButton.id = "edit-button";
-		editButton.innerHTML = "&#9998;";
-		editButton.onclick = (event) => {
-			event.preventDefault();
-			closeModal();
-			openEditCraft(craft);
-		};
-		craftH2.append(editButton);
-		const deleteButton = document.createElement("button");
-		deleteButton.id = "delete-button";
-		deleteButton.innerHTML = "&#128465;";
-		deleteButton.onclick = async (event) => {
-			event.preventDefault();
-			let response = await fetch(`/api/crafts/${craft._id}`, {
-				method:"DELETE",
-				headers:{"Content-Type":"application/json;charset=utf-8"}
-			});
-			if(response.status != 200){
-				console.log("Error deleting");
-				return;
-			}
-			let result = await response.json();
-			showCrafts();
-			closeModal();
-		};
-		craftH2.append(deleteButton);
-		textDiv.append(craftH2);
-		const descP = document.createElement("p");
-		descP.innerHTML = craft.description;
-		textDiv.append(descP);
-		const craftH3 = document.createElement("h3");
-		craftH3.innerHTML = "Supplies:";
-		textDiv.append(craftH3);
-		const list = document.createElement("ul");
-		craft.supplies.forEach((supply) => {
-			const item = document.createElement("li");
-			item.innerHTML = supply;
-			list.appendChild(item);
-		});
-		textDiv.append(list);
-		flexDiv.append(imgDiv);
-		flexDiv.append(textDiv);
-		modalDiv.append(flexDiv);
-		
-		layout.classList.remove("hidden");
-		modalDiv.classList.remove("hidden");
-	};
-	return craftsImg;
+const createCraftCard = (craft) => {
+    const card = document.createElement("div");
+    card.classList.add("craft-card");
+    
+    const image = document.createElement("img");
+    image.src = "./images/" + craft.image;
+    image.alt = craft.name;
+    image.addEventListener("click", () => openCraftModal(craft));
+    
+    const name = document.createElement("h2");
+    name.textContent = craft.name;
+
+    const editButton = createButton("edit-button", "&#9998;", () => openEditCraft(craft));
+    const deleteButton = createButton("delete-button", "&#128465;", () => deleteCraft(craft));
+
+    const description = document.createElement("p");
+    description.textContent = craft.description;
+
+    const suppliesHeader = document.createElement("h3");
+    suppliesHeader.textContent = "Supplies:";
+
+    const suppliesList = document.createElement("ul");
+    craft.supplies.forEach((supply) => {
+        const item = document.createElement("li");
+        item.textContent = supply;
+        suppliesList.appendChild(item);
+    });
+
+    card.appendChild(image);
+    card.appendChild(name);
+    card.appendChild(editButton);
+    card.appendChild(deleteButton);
+    card.appendChild(description);
+    card.appendChild(suppliesHeader);
+    card.appendChild(suppliesList);
+
+    return card;
 };
+
+const createButton = (id, text, onClick) => {
+    const button = document.createElement("button");
+    button.id = id;
+    button.innerHTML = text;
+    button.addEventListener("click", onClick);
+    return button;
+};
+
+const openCraftModal = (craft) => {
+    const layout = document.getElementById("layout");
+    const modalDiv = document.getElementById("craft-modal");
+    modalDiv.innerHTML = "";
+
+    const buttonWrap = document.createElement("p");
+    buttonWrap.id = "btn";
+    const close = document.createElement("button");
+    close.onclick = closeModal;
+    close.innerHTML = "X";
+    buttonWrap.append(close);
+    modalDiv.append(buttonWrap);
+
+    const craftCard = createCraftCard(craft);
+    modalDiv.appendChild(craftCard);
+
+    layout.classList.remove("hidden");
+    modalDiv.classList.remove("hidden");
+};
+
+const deleteCraft = async (craft) => {
+    try {
+        let response = await fetch(`/api/crafts/${craft._id}`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json;charset=utf-8" }
+        });
+        if (response.status !== 200) {
+            throw new Error("Error deleting");
+        }
+        let result = await response.json();
+        showCrafts();
+        closeModal();
+    } catch (error) {
+        console.error("Error deleting craft:", error);
+    }
+};
+
 const closeModal = () => {
 	const overlay = document.getElementById("layout");
 	const modalDiv = document.getElementById("craft-modal");
